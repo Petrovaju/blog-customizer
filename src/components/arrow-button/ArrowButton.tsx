@@ -1,4 +1,4 @@
-import cn from 'classnames';
+import clsx from 'clsx';
 
 import arrow from 'src/images/arrow.svg';
 import styles from './ArrowButton.module.scss';
@@ -12,14 +12,11 @@ type TArrowButtonProps = {
 };
 
 export const ArrowButton = ({ onClick, isOpen }: TArrowButtonProps) => {
-	const containerStyle = cn(
+	const containerStyle = clsx(
 		styles.container,
-		isOpen ? styles.container_open : styles.container
+		isOpen && styles.container_open
 	);
-	const arrowStyle = cn(
-		styles.arrow,
-		isOpen ? styles.arrow_open : styles.arrow
-	);
+	const arrowStyle = clsx(styles.arrow, isOpen && styles.arrow_open);
 	return (
 		/* Не забываем указаывать role и aria-label атрибуты для интерактивных элементов */
 		<div

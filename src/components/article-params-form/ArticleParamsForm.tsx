@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
-import cn from 'classnames';
+import clsx from 'clsx';
 
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
@@ -68,9 +68,9 @@ export const ArticleParamsForm = (props: TArticleParamsFormProps) => {
 		setStateCb(selected);
 	};
 
-	const containerStyle = cn(
+	const containerStyle = clsx(
 		styles.container,
-		isOpened ? styles.container_open : styles.container
+		isOpened && styles.container_open
 	);
 	return (
 		<>
