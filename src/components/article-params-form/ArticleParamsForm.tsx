@@ -7,6 +7,7 @@ import {
 	OptionType,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
@@ -18,33 +19,43 @@ import { Separator } from '../separator/Separator';
 import styles from './ArticleParamsForm.module.scss';
 
 type TArticleParamsFormProps = {
-	font: OptionType;
-	setFont: (a: OptionType) => void;
-
-	fontSize: OptionType;
-	setFontSize: (a: OptionType) => void;
-
-	fontColor: OptionType;
-	setFontColor: (a: OptionType) => void;
-
-	bgColor: OptionType;
-	setBgColor: (a: OptionType) => void;
-
-	contentWidth: OptionType;
-	setContentWidth: (a: OptionType) => void;
-
 	onResetClick: () => void;
-	onSubmitClick: () => void;
+	onSubmitClick: (
+		f: OptionType,
+		fs: OptionType,
+		fc: OptionType,
+		bg: OptionType,
+		cw: OptionType
+	) => void;
 };
 
 export const ArticleParamsForm = (props: TArticleParamsFormProps) => {
-	const [isOpened, setIsOpened] = useState(false);
+	const [isMenuOpen, setisMenuOpen] = useState(false);
+	const [font, setFont] = useState<OptionType>(
+		defaultArticleState.fontFamilyOption
+	);
+	const [fontSize, setFontSize] = useState<OptionType>(
+		defaultArticleState.fontSizeOption
+	);
+	const [fontColor, setFontColor] = useState<OptionType>(
+		defaultArticleState.fontColor
+	);
+	const [bgColor, setBgColor] = useState<OptionType>(
+		defaultArticleState.backgroundColor
+	);
+	const [contentWidth, setContentWidth] = useState<OptionType>(
+		defaultArticleState.contentWidth
+	);
 	const asideRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
+		if (!isMenuOpen) {
+			return;
+		}
+
 		const handleOutsideClick = (evt: MouseEvent) => {
 			if (asideRef.current && !asideRef.current.contains(evt.target as Node)) {
-				setIsOpened(false);
+				setisMenuOpen(false);
 			}
 		};
 
@@ -55,67 +66,60 @@ export const ArticleParamsForm = (props: TArticleParamsFormProps) => {
 		};
 	}, []);
 
-	const handleArrowButtonClick = () => setIsOpened((prevState) => !prevState);
+	const handleArrowButtonClick = () => setisMenuOpen((prevState) => !prevState);
 	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
-		props.onSubmitClick();
-	};
-
-	const setSelected = (
-		selected: OptionType,
-		setStateCb: (o: OptionType) => void
-	) => {
-		setStateCb(selected);
+		props.onSubmitClick(font, fontSize, fontColor, bgColor, contentWidth);
 	};
 
 	const containerStyle = clsx(
 		styles.container,
-		isOpened && styles.container_open
+		isMenuOpen && styles.container_open
 	);
 	return (
 		<>
-			<ArrowButton isOpen={isOpened} onClick={handleArrowButtonClick} />
+			<ArrowButton isOpen={isMenuOpen} onClick={handleArrowButtonClick} />
 			<aside className={containerStyle} ref={asideRef}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<Select
-						selected={props.font}
+						selected={font}
 						options={fontFamilyOptions}
 						onChange={(selected: OptionType) => {
-							setSelected(selected, props.setFont);
+							setFont(selected);
 						}}
 						title='Шрифт'
 					/>
 					<RadioGroup
 						name='radioFonts'
 						options={fontSizeOptions}
-						selected={props.fontSize}
+						selected={fontSize}
 						title='размер шрифта'
 						onChange={(selected: OptionType) => {
-							setSelected(selected, props.setFontSize);
+							setFontSize(selected);
 						}}
 					/>
 					<Select
-						selected={props.fontColor}
+						selected={fontColor}
 						options={fontColors}
 						onChange={(selected: OptionType) => {
-							setSelected(selected, props.setFontColor);
+							setFontColor(selected);
 						}}
 						title='цвет шрифта'
 					/>
 					<Separator />
 					<Select
-						selected={props.bgColor}
+						selected={bgColor}
 						options={backgroundColors}
 						onChange={(selected: OptionType) => {
-							setSelected(selected, props.setBgColor);
+							setBgColor(selected);
 						}}
 						title='цвет фона'
 					/>
 					<Select
-						selected={props.contentWidth}
+						selected={contentWidth}
 						options={contentWidthArr}
 						onChange={(selected: OptionType) => {
-							setSelected(selected, props.setContentWidth);
+							setContentWidth(selected);
 						}}
 						title='ширина контента'
 					/>
